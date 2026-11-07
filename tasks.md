@@ -112,21 +112,21 @@
 
 ## Fase 3 — React (o balcão de atendimento)
 
-- [ ] **T13 [PREP] Base do frontend**
+- [x] **T13 [PREP] Base do frontend**
   - Descrição: `npm create vite@latest frontend -- --template react-ts`, `react-router-dom`, dependência `file:../bindings/selo`, `@creit.tech/stellar-wallets-kit@2.8.0`, `.env.example` (§4), cliente da API, client do contrato a partir das envs, rotas `/`, `/m/:address` e `/emitir` (placeholder) e o tema de fonte grande e alto contraste.
   - Arquivos: `frontend/**`
   - Depende de: T08, T12
   - Agente: **felipe**
   - Pronto: `cd frontend && npm run build`
 
-- [ ] **T14 [PREP] Tela Ranking (`/`)**
+- [x] **T14 [PREP] Tela Ranking (`/`)**
   - Descrição: lista do `GET /api/ranking` com os estados carregando, vazio, lista e erro (§4.1). Cada linha leva ao perfil.
   - Arquivos: `frontend/src/pages/Ranking.tsx` (+ componentes)
   - Depende de: T13
   - Agente: **felipe**
   - Pronto: `cd frontend && npm run build`
 
-- [ ] **T15 [PREP] Tela Perfil (`/m/:address`)**
+- [x] **T15 [PREP] Tela Perfil (`/m/:address`)**
   - Descrição: colunas "on-chain" (`reputation` + `badges_of` pelos bindings, sem carteira) e "off-chain" (`GET /api/members/{address}` com revogados), lado a lado, com validação do endereço e estados independentes por coluna.
   - Arquivos: `frontend/src/pages/Perfil.tsx` (+ componentes)
   - Depende de: T13
