@@ -80,7 +80,7 @@
 
 ## Fase 2 — Laravel (o arquivo morto)
 
-- [ ] **T09 [PREP] Projeto Laravel e migrations**
+- [x] **T09 [PREP] Projeto Laravel e migrations**
   - Descrição: `composer create-project laravel/laravel backend`, `composer require soneso/stellar-php-sdk`, `php artisan install:api`, as 4 migrations (§3.2), o enum `BadgeKind` com `weight()` e o `.env.example` com as chaves da §3.1 sem segredos.
   - Arquivos: `backend/**`
   - Depende de: T07
