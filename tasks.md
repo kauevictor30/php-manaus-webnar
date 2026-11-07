@@ -119,7 +119,7 @@
   - Agente: **felipe**
   - Pronto: `cd frontend && npm run build`
 
-- [ ] **T14 [PREP] Tela Ranking (`/`)**
+- [x] **T14 [PREP] Tela Ranking (`/`)**
   - Descrição: lista do `GET /api/ranking` com os estados carregando, vazio, lista e erro (§4.1). Cada linha leva ao perfil.
   - Arquivos: `frontend/src/pages/Ranking.tsx` (+ componentes)
   - Depende de: T13
