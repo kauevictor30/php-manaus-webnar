@@ -101,7 +101,7 @@
   - Agente: **luiz**
   - Pronto: `cd backend && php artisan test --filter=IndexerTest && php artisan selo:index && php artisan selo:index` (2ª execução não cria registros novos)
 
-- [ ] **T12 [PREP] Perfil e ranking na API**
+- [x] **T12 [PREP] Perfil e ranking na API**
   - Descrição: `GET /api/members/{address}` (validação StrKey, histórico com revogados, `points` dos ativos) e `GET /api/ranking` (top 20), conforme §3.3. Feature tests, incluindo o teste que fixa os pesos (D-06).
   - Arquivos: `backend/routes/api.php`, `app/Http/**`, `tests/Feature/MemberApiTest.php`, `tests/Feature/RankingApiTest.php`
   - Depende de: T10, T11
