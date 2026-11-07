@@ -20,7 +20,7 @@
 
 ## Fase 1 — Contrato (o cartório)
 
-- [ ] **T01 [PREP] Identidades na testnet**
+- [x] **T01 [PREP] Identidades na testnet**
   - Descrição: criar e financiar as identidades `admin` e `emissor` no keystore do Stellar CLI (`stellar keys generate <nome> --network testnet --fund`). Nenhuma chave em arquivo do repositório.
   - Arquivos: nenhum (keystore do CLI)
   - Depende de: —
