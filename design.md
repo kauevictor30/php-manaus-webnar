@@ -239,7 +239,7 @@ CORS: `config/cors.php` (gerado com `php artisan config:publish cors`) com `allo
 - **Sem cursor salvo:** usa `startLedger = SELO_START_LEDGER`. **Com cursor:** passa só `PaginationOptions(cursor)`, sem `startLedger`, porque o RPC trata os dois como mutuamente exclusivos.
 - Para cada `EventInfo`: `topic[0]` é decodificado com `XdrSCVal::fromBase64Xdr` e vira o Symbol do evento; `topic[1]` vira o `Address` (`Address::fromXdrSCVal(...)->getAccountId()`); `value` vira um ScMap com os campos da §2.4.
   - `issued` → `firstOrCreate` em `badge_records` pela chave `rpc_event_id = EventInfo::getId()`, com `tx_hash`, `ledger` e `issued_at` (vindo do `issued_at` do evento).
-  - `revoked` → se `rpc_event_id` já foi processado, ignora. Senão, marca `status=revoked, revoked_at=ledgerClosedAt` no registro `issued` mais recente com o mesmo `(member, kind, event_id)` e com `ledger <= ledger do revoke`. O id do revoke fica gravado para garantir a idempotência (D-07).
+  - `revoked` → marca `status=revoked, revoked_at=ledgerClosedAt` no registro `status=issued` mais recente com o mesmo `(member, kind, event_id)` e com `ledger <= ledger do revoke`. Se não achar nenhum, não faz nada. Reprocessar o mesmo revoke não encontra mais `issued` correspondente, então é idempotente sem coluna extra; o cursor salvo na mesma transação é a segunda garantia (D-07).
   - `issuer` → é ignorado, porque não existe tabela de emissores no escopo.
 - Cada página é processada numa **transação de banco** que grava os registros e o novo `cursor` (`GetEventsResponse::getCursor()`) juntos. O loop continua até vir uma página vazia.
 - Se o `startLedger` for anterior ao `getOldestLedger()` do RPC, o comando falha com uma mensagem clara pedindo para atualizar o `SELO_START_LEDGER`.
@@ -325,6 +325,6 @@ O código sai do erro de simulação/envio retornado pelos bindings (`Error(Cont
 | D-04 | `NotAdmin` (3) fica reservado. A falta de assinatura do admin falha na auth do host. | Com `require_auth` sobre o admin gravado, não existe caminho no código que retorne `NotAdmin`. Isso evita inventar uma checagem artificial. |
 | D-05 | Os eventos usam `#[contractevent(topics = [...])]`, e não `env.events().publish`. | `publish` está depreciado no soroban-sdk atual. Os nomes `issuer`/`issued`/`revoked` são mantidos como 1º tópico. |
 | D-06 | Os pesos ficam duplicados no PHP (`BadgeKind::weight`). | O ranking do Laravel conta os badges ativos sem chamar o contrato. Um teste do Laravel fixa os mesmos valores. |
-| D-07 | O revoke indexado marca o `issued` mais recente com `ledger <=` ledger do revoke. | Assim o reprocessamento de um revoke antigo não revoga um badge reemitido depois (RN-06). |
+| D-07 | O revoke indexado marca o `issued` mais recente com `ledger <=` ledger do revoke; o id RPC do revoke não é gravado (o schema da §3.2 não muda). | Assim o reprocessamento de um revoke antigo não revoga um badge reemitido depois (RN-06), e repetir o mesmo revoke não acha `issued` para alterar. |
 | D-08 | O workspace do contrato fica em `selo/` (gerado por `stellar contract init selo --name selo`), o Laravel em `backend/`, o React em `frontend/` e os bindings em `bindings/selo/`. | Os caminhos reais serão confirmados depois do init e registrados no topo do `tasks.md`. |
 | D-09 | O revoke é feito só pela CLI, sem tela. | As 3 telas do escopo não incluem revoke. |

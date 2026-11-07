@@ -24,6 +24,23 @@ Analogia: endereço G... = passaporte · badge = carimbo · contrato = cartório
 - Nunca gravar chave privada / .env em arquivo versionado. Identidades ficam no keystore do Stellar CLI.
 - Não instalar nada sem perguntar ao usuário.
 
+## Sprints (só [PREP]; trabalho na branch `prep`, sem push)
+Andamento real = checkboxes do `tasks.md`. Cada sprint fecha com revisão da `sarah` antes do merge/avanço.
+
+| Sprint | Tarefas | Agente | Onde roda | Estado (2026-11-07 17h) |
+|---|---|---|---|---|
+| 1 · Contrato | T01–T08 | dione | `prep` | ✅ concluído e aprovado pela sarah |
+| 2 · Laravel | T09–T12 | luiz | `prep` (`backend/`) | ✅ concluído (26 testes) e aprovado pela sarah |
+| 3 · React (Ranking + Perfil) | T13–T15 | felipe | `prep` (`frontend/`, mergeado em ba4556d) | ✅ concluído (build ok) e aprovado pela sarah |
+| DEMO · Emissor | T16–T18 | felipe | ao vivo | ⏸ não fazer antes da aula |
+
+Dados fixos: contract ID `CDOLW5XCTGHWGZWIDSBXGIUGSDKQOWILSCU7D6FNHV4NH2IGD73W5B3Q` (alias `selo`) · `SELO_START_LEDGER=5611351` · identidades `admin` e `emissor` no keystore do CLI.
+
+Coordenação com outras sessões:
+- Todo o [PREP] está concluído e aprovado. Não adiantar T16–T18 (são da aula ao vivo).
+- Não refazer deploy do contrato (muda o contract ID e quebra bindings e Laravel).
+- Num clone limpo, buildar os bindings antes do frontend: `cd bindings/selo && npm install && npm run build`.
+
 ## Ambiente (verificado em 2026-11-07)
 node 24.12 · npm 11.6 · rustc/cargo 1.99 + wasm32v1-none · stellar CLI 27.1.0 (>= 23 exigido; 22.x quebra invoke; 25.2.0 não compila no rustc 1.99) · php 8.5.4 · composer 2.9.5
 
