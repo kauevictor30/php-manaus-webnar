@@ -4,12 +4,12 @@
 > **[PREP]** = antes da aula · **[DEMO]** = ao vivo (só a tela do Emissor e a emissão).
 
 ## Caminhos reais
-> Preencher depois da T02 com o que o `stellar contract init` realmente gerou. Os valores abaixo são os esperados (design D-08).
+> Confirmado na T02 com o que o `stellar contract init selo --name selo` gerou (CLI 27.1.0, soroban-sdk 27.0.6). Nenhum crate de exemplo extra foi gerado.
 
 | O quê | Caminho |
 |---|---|
-| Workspace do contrato | `selo/` |
-| Crate do contrato | `selo/contracts/selo/` |
+| Workspace do contrato | `selo/` (`selo/Cargo.toml`, `selo/Cargo.lock`) |
+| Crate do contrato | `selo/contracts/selo/` (`src/lib.rs`, `src/test.rs`, `Makefile`) |
 | WASM gerado | _(preencher depois da T07)_ |
 | Bindings TS | `bindings/selo/` |
 | Laravel | `backend/` |
@@ -27,7 +27,7 @@
   - Agente: **soroban-dev**
   - Pronto: `stellar keys address admin && stellar keys address emissor` imprime dois endereços `G...`
 
-- [ ] **T02 [PREP] Workspace do contrato**
+- [x] **T02 [PREP] Workspace do contrato**
   - Descrição: `stellar contract init selo --name selo`; inspecionar a estrutura gerada, remover o exemplo que não for o crate `selo` e preencher a tabela "Caminhos reais".
   - Arquivos: `selo/**`, `tasks.md`
   - Depende de: —
