@@ -112,7 +112,7 @@
 
 ## Fase 3 — React (o balcão de atendimento)
 
-- [ ] **T13 [PREP] Base do frontend**
+- [x] **T13 [PREP] Base do frontend**
   - Descrição: `npm create vite@latest frontend -- --template react-ts`, `react-router-dom`, dependência `file:../bindings/selo`, `@creit.tech/stellar-wallets-kit@2.8.0`, `.env.example` (§4), cliente da API, client do contrato a partir das envs, rotas `/`, `/m/:address` e `/emitir` (placeholder) e o tema de fonte grande e alto contraste.
   - Arquivos: `frontend/**`
   - Depende de: T08, T12

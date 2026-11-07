@@ -1,0 +1,249 @@
+/* Tema Selo: fonte grande e contraste alto, legível em tela compartilhada. */
+:root {
+  --bg: #ffffff;
+  --text: #0a0a0a;
+  --muted: #333333;
+  --border: #0a0a0a;
+  --accent: #0033a0;
+  --onchain: #4b0082;
+  --offchain: #7a3e00;
+  --ok: #0b6b1f;
+  --error: #a30000;
+  --error-bg: #fff0f0;
+  --surface: #f2f2f2;
+
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin: 0 0 1rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin: 0 0 0.75rem;
+}
+
+a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 4px solid #ffbf00;
+  outline-offset: 2px;
+}
+
+code,
+.mono {
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  word-break: break-all;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  background: var(--text);
+  color: var(--bg);
+}
+
+.topbar a {
+  color: var(--bg);
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+.topbar .brand {
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.topbar nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.topbar nav a.active {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 3px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.state {
+  font-size: 1.2rem;
+  padding: 1rem 1.25rem;
+  border: 2px solid var(--border);
+  background: var(--surface);
+}
+
+.state.error {
+  color: var(--error);
+  border-color: var(--error);
+  background: var(--error-bg);
+  font-weight: 600;
+}
+
+/* Ranking */
+.ranking {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 2px solid var(--border);
+}
+
+.ranking li a {
+  display: grid;
+  grid-template-columns: 4rem 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0.5rem;
+  border-bottom: 2px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.ranking li a:hover {
+  background: var(--surface);
+}
+
+.ranking .position {
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.ranking .who strong {
+  display: block;
+}
+
+.ranking .points {
+  font-size: 1.4rem;
+  font-weight: 800;
+  text-align: right;
+}
+
+.ranking .points small {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* Perfil */
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.column {
+  border: 3px solid var(--border);
+  padding: 1.25rem;
+}
+
+.column.onchain {
+  border-color: var(--onchain);
+}
+
+.column.offchain {
+  border-color: var(--offchain);
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.15rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.tag.onchain {
+  background: var(--onchain);
+}
+
+.tag.offchain {
+  background: var(--offchain);
+}
+
+.source {
+  color: var(--muted);
+  margin: 0 0 1rem;
+}
+
+.big-number {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.badge-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.badge-list li {
+  padding: 0.75rem 0;
+  border-top: 2px solid var(--surface);
+}
+
+.status {
+  display: inline-block;
+  padding: 0 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  border: 2px solid currentColor;
+}
+
+.status.issued {
+  color: var(--ok);
+}
+
+.status.revoked {
+  color: var(--error);
+}
+
+.revoked-item {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.detail {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
