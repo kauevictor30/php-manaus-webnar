@@ -2,7 +2,9 @@
 //! Selo — badges soulbound (intransferíveis) que formam a reputação on-chain.
 //! Não existe transferência e o contrato não implementa SEP-41 (RN-02).
 
-use soroban_sdk::{contract, contracterror, contractevent, contracttype, Address};
+use soroban_sdk::{
+    contract, contracterror, contractevent, contractimpl, contracttype, Address, Env,
+};
 
 // ---------------------------------------------------------------- 2.1 Tipos
 
@@ -98,7 +100,53 @@ pub struct RevokedEvent {
 
 // ---------------------------------------------------------------- 2.5 Contrato
 
+fn bump_instance(env: &Env) {
+    env.storage()
+        .instance()
+        .extend_ttl(TTL_THRESHOLD, TTL_EXTEND_TO);
+}
+
+fn bump_persistent(env: &Env, key: &DataKey) {
+    env.storage()
+        .persistent()
+        .extend_ttl(key, TTL_THRESHOLD, TTL_EXTEND_TO);
+}
+
+fn read_admin(env: &Env) -> Result<Address, Error> {
+    env.storage()
+        .instance()
+        .get(&DataKey::Admin)
+        .ok_or(Error::NotInitialized)
+}
+
 #[contract]
 pub struct Selo;
+
+#[contractimpl]
+impl Selo {
+    /// Grava o admin. Só pode ser chamado uma vez (RN-01).
+    pub fn init(env: Env, admin: Address) -> Result<(), Error> {
+        if env.storage().instance().has(&DataKey::Admin) {
+            return Err(Error::AlreadyInitialized);
+        }
+        env.storage().instance().set(&DataKey::Admin, &admin);
+        bump_instance(&env);
+        Ok(())
+    }
+
+    /// Credencia (`true`) ou descredencia (`false`) um emissor. Só o admin.
+    pub fn set_issuer(env: Env, issuer: Address, enabled: bool) -> Result<(), Error> {
+        let admin = read_admin(&env)?;
+        admin.require_auth();
+
+        let key = DataKey::Issuer(issuer.clone());
+        env.storage().persistent().set(&key, &enabled);
+        bump_persistent(&env, &key);
+        bump_instance(&env);
+
+        IssuerEvent { issuer, enabled }.publish(&env);
+        Ok(())
+    }
+}
 
 mod test;

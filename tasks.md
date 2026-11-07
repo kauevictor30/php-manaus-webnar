@@ -41,7 +41,7 @@
   - Agente: **soroban-dev**
   - Pronto: `cd selo && cargo test -p selo weight`
 
-- [ ] **T04 [PREP] `init` e `set_issuer`**
+- [x] **T04 [PREP] `init` e `set_issuer`**
   - Descrição: testes primeiro (feliz, sem auth, `AlreadyInitialized`, `NotInitialized`, evento `issuer`), depois a implementação (§2.5).
   - Arquivos: `selo/contracts/selo/src/lib.rs`, `src/test.rs`
   - Depende de: T03
