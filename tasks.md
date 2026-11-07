@@ -87,7 +87,7 @@
   - Agente: **luiz**
   - Pronto: `cd backend && php artisan migrate:fresh --force && php artisan migrate:status`
 
-- [ ] **T10 [PREP] API de eventos + CORS**
+- [x] **T10 [PREP] API de eventos + CORS**
   - Descrição: `GET /api/events` e `POST /api/events` com `X-Admin-Token` comparado via `hash_equals` (401/422/201), e CORS restrito a `FRONTEND_URL` (§3.3). Feature tests.
   - Arquivos: `backend/routes/api.php`, `app/Http/**`, `config/cors.php`, `tests/Feature/EventApiTest.php`
   - Depende de: T09
