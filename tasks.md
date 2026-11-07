@@ -34,7 +34,7 @@
   - Agente: **soroban-dev**
   - Pronto: `cd selo && cargo test` passa (com os testes do template)
 
-- [ ] **T03 [PREP] Tipos, storage, erros e pesos**
+- [x] **T03 [PREP] Tipos, storage, erros e pesos**
   - Descrição: `BadgeKind`, `weight()`, `Badge`, `DataKey`, `Error`, as constantes de TTL e as structs de evento (§2.1 a §2.4). Testes de `weight()`.
   - Arquivos: `selo/contracts/selo/src/lib.rs` (ou módulos ao lado), `src/test.rs`
   - Depende de: T02

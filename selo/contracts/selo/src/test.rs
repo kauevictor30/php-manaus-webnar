@@ -1,21 +1,25 @@
 #![cfg(test)]
 
 use super::*;
-use soroban_sdk::{vec, Env, String};
+
+// ------------------------------------------------------------ weight (T03)
 
 #[test]
-fn test() {
-    let env = Env::default();
-    let contract_id = env.register(Contract, ());
-    let client = ContractClient::new(&env, &contract_id);
+fn weight_participante_vale_1() {
+    assert_eq!(weight(BadgeKind::Participante), 1);
+}
 
-    let words = client.hello(&String::from_str(&env, "Dev"));
-    assert_eq!(
-        words,
-        vec![
-            &env,
-            String::from_str(&env, "Hello"),
-            String::from_str(&env, "Dev"),
-        ]
-    );
+#[test]
+fn weight_mentor_vale_3() {
+    assert_eq!(weight(BadgeKind::Mentor), 3);
+}
+
+#[test]
+fn weight_organizador_vale_3() {
+    assert_eq!(weight(BadgeKind::Organizador), 3);
+}
+
+#[test]
+fn weight_palestrante_vale_5() {
+    assert_eq!(weight(BadgeKind::Palestrante), 5);
 }
