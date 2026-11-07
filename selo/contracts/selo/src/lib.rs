@@ -3,7 +3,7 @@
 //! Não existe transferência e o contrato não implementa SEP-41 (RN-02).
 
 use soroban_sdk::{
-    contract, contracterror, contractevent, contractimpl, contracttype, Address, Env,
+    contract, contracterror, contractevent, contractimpl, contracttype, Address, Env, Vec,
 };
 
 // ---------------------------------------------------------------- 2.1 Tipos
@@ -145,6 +145,76 @@ impl Selo {
         bump_instance(&env);
 
         IssuerEvent { issuer, enabled }.publish(&env);
+        Ok(())
+    }
+
+    /// Emite (carimba) um badge. Exige a assinatura do emissor; o membro não assina.
+    pub fn issue(
+        env: Env,
+        issuer: Address,
+        member: Address,
+        kind: BadgeKind,
+        event_id: u32,
+    ) -> Result<(), Error> {
+        issuer.require_auth();
+
+        // 1) emissor credenciado e ativo (RN-07)
+        let active: bool = env
+            .storage()
+            .persistent()
+            .get(&DataKey::Issuer(issuer.clone()))
+            .unwrap_or(false);
+        if !active {
+            return Err(Error::NotIssuer);
+        }
+        // 2) sem auto-emissão (RN-04)
+        if issuer == member {
+            return Err(Error::SelfIssue);
+        }
+        // 3) dedup (RN-03)
+        let badge_key = DataKey::Badge(member.clone(), kind, event_id);
+        if env.storage().persistent().has(&badge_key) {
+            return Err(Error::AlreadyHasBadge);
+        }
+
+        let issued_at = env.ledger().timestamp();
+        let badge = Badge {
+            kind,
+            event_id,
+            issuer: issuer.clone(),
+            issued_at,
+        };
+        env.storage().persistent().set(&badge_key, &badge);
+        bump_persistent(&env, &badge_key);
+
+        let list_key = DataKey::BadgeList(member.clone());
+        let mut list: Vec<(BadgeKind, u32)> = env
+            .storage()
+            .persistent()
+            .get(&list_key)
+            .unwrap_or_else(|| Vec::new(&env));
+        list.push_back((kind, event_id));
+        env.storage().persistent().set(&list_key, &list);
+        bump_persistent(&env, &list_key);
+
+        let rep_key = DataKey::Reputation(member.clone());
+        let rep: u32 = env.storage().persistent().get(&rep_key).unwrap_or(0);
+        let rep = rep
+            .checked_add(weight(kind))
+            .expect("reputation overflow");
+        env.storage().persistent().set(&rep_key, &rep);
+        bump_persistent(&env, &rep_key);
+
+        bump_instance(&env);
+
+        IssuedEvent {
+            member,
+            kind,
+            event_id,
+            issuer,
+            issued_at,
+        }
+        .publish(&env);
         Ok(())
     }
 }

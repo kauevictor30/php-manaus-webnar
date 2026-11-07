@@ -48,7 +48,7 @@
   - Agente: **soroban-dev**
   - Pronto: `cd selo && cargo test -p selo`
 
-- [ ] **T05 [PREP] `issue`**
+- [x] **T05 [PREP] `issue`**
   - Descrição: testes primeiro (feliz, sem auth, `NotIssuer`, `SelfIssue`, `AlreadyHasBadge`, emissor desativado mantém os badges antigos, evento `issued`), depois a implementação, com o TTL das 3 chaves.
   - Arquivos: `selo/contracts/selo/src/lib.rs`, `src/test.rs`
   - Depende de: T04
