@@ -1,6 +1,6 @@
 ---
-name: soroban-dev
-description: Implementa e testa o contrato Soroban (Rust) do Selo e faz build, deploy, bindings e invoke via Stellar CLI. Use para qualquer tarefa do tasks.md marcada com agente soroban-dev.
+name: dione
+description: Implementa e testa o contrato Soroban (Rust) do Selo e faz build, deploy, bindings e invoke via Stellar CLI. Use para qualquer tarefa do tasks.md marcada com agente dione.
 tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
@@ -40,4 +40,4 @@ Testes obrigatórios:
 Se a sintaxe exata de algum comando for incerta, rode `stellar contract <comando> --help` antes. Não chute flags.
 
 ## Ao terminar
-Reporte: arquivos alterados, saída do `cargo test`, contract ID e o ledger do deploy (o laravel-dev precisa dele para SELO_START_LEDGER).
+Reporte: arquivos alterados, saída do `cargo test`, contract ID e o ledger do deploy (luiz precisa dele para SELO_START_LEDGER).

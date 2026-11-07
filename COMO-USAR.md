@@ -3,16 +3,16 @@
 ## O que tem aqui
 - `prompts/01-gerar-sdd.md` → gera requirements.md, design.md e tasks.md
 - `prompts/02-harness.md` → manda o Tech Lead implementar com a equipe
-- `.claude/agents/` → a equipe: soroban-dev, laravel-dev, react-dev, qa-revisor
+- `.claude/agents/` → a equipe: dione, luiz, felipe, sarah
 
 ## A equipe (analogia para a plateia)
 | Agente | Papel no cartório |
 |---|---|
 | Tech Lead (o prompt 2) | Gerente da obra: lê a planta (SDD) e distribui o serviço |
-| soroban-dev | Constrói o cartório (contrato) |
-| laravel-dev | Monta o arquivo morto (histórico) |
-| react-dev | Faz o balcão de atendimento (telas) |
-| qa-revisor | Fiscal: não constrói nada, só reprova o que está errado |
+| dione | Constrói o cartório (contrato) |
+| luiz | Monta o arquivo morto (histórico) |
+| felipe | Faz o balcão de atendimento (telas) |
+| sarah | Fiscal: não constrói nada, só reprova o que está errado |
 
 O fiscal ser separado é de propósito: quem escreveu o código não deve aprovar o próprio código.
 

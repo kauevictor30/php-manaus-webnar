@@ -1,6 +1,6 @@
 ---
-name: laravel-dev
-description: Implementa o backend Laravel do Selo em /backend — migrations, API REST e o indexador de eventos do contrato via Stellar RPC. Use para tarefas do tasks.md marcadas com agente laravel-dev.
+name: luiz
+description: Implementa o backend Laravel do Selo em /backend — migrations, API REST e o indexador de eventos do contrato via Stellar RPC. Use para tarefas do tasks.md marcadas com agente luiz.
 tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 

@@ -1,6 +1,6 @@
 ---
-name: react-dev
-description: Implementa o frontend React + TypeScript do Selo — perfil, ranking e painel do emissor — usando a carteira Varial e os bindings gerados pelo Stellar CLI. Use para tarefas do tasks.md marcadas com agente react-dev.
+name: felipe
+description: Implementa o frontend React + TypeScript do Selo — perfil, ranking e painel do emissor — usando a carteira Varial e os bindings gerados pelo Stellar CLI. Use para tarefas do tasks.md marcadas com agente felipe.
 tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch
 ---
 

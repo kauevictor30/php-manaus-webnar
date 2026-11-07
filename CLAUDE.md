@@ -13,7 +13,7 @@ Analogia: endereço G... = passaporte · badge = carimbo · contrato = cartório
 
 ## Fonte da verdade
 - `requirements.md`, `design.md`, `tasks.md` (SDD) na raiz. Gerados por `prompts/01-gerar-sdd.md`.
-- Implementação segue `prompts/02-harness.md`: Tech Lead delega a `.claude/agents/` (soroban-dev, laravel-dev, react-dev; qa-revisor revisa cada fase e não escreve código).
+- Implementação segue `prompts/02-harness.md`: Tech Lead delega a `.claude/agents/` (dione, luiz, felipe; sarah revisa cada fase e não escreve código).
 - Visão geral e ordem da aula: `COMO-USAR.md`.
 
 ## Regras

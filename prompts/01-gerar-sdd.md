@@ -91,7 +91,7 @@ Votação, multisig do admin (citar como próxima versão), expiração, emissã
 
 1. requirements.md: visão, atores, user stories com critérios de aceite em EARS ("QUANDO... O SISTEMA DEVE..."), RNs, fora de escopo.
 2. design.md: arquitetura em Mermaid; contrato completo (tipos, storage, erros, assinaturas com pré/pós-condições e evento); diagramas de sequência Mermaid para issue, revoke e indexação; Laravel (migrations, endpoints com request/response); React (telas e estados); seção "Ameaças e defesas" (carimbo indevido, auto-emissão, duplicidade, revoke na posição errada, admin único); seção "Decisões".
-3. tasks.md: no máximo 18 tarefas pequenas, cada uma com ID, descrição, arquivos, dependência, AGENTE RESPONSÁVEL (soroban-dev, laravel-dev ou react-dev) e CRITÉRIO DE PRONTO como comando verificável. Ordem: doctor/init → contrato + testes → build/deploy → bindings → Laravel → React → teste ponta a ponta. Marque [PREP] (fazer antes da aula) e [DEMO] (fazer ao vivo). DEMO = apenas a tela do Emissor e a emissão ao vivo.
+3. tasks.md: no máximo 18 tarefas pequenas, cada uma com ID, descrição, arquivos, dependência, AGENTE RESPONSÁVEL (dione, luiz ou felipe) e CRITÉRIO DE PRONTO como comando verificável. Ordem: doctor/init → contrato + testes → build/deploy → bindings → Laravel → React → teste ponta a ponta. Marque [PREP] (fazer antes da aula) e [DEMO] (fazer ao vivo). DEMO = apenas a tela do Emissor e a emissão ao vivo.
 
 Não escreva código de implementação, apenas assinaturas e interfaces.
 ```

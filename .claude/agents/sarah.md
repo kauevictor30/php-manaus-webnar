@@ -1,5 +1,5 @@
 ---
-name: qa-revisor
+name: sarah
 description: Revisa cada fase entregue (contrato, Laravel, React) contra o SDD e a seção "Ameaças e defesas". Não escreve código. Use ao final de cada fase, antes de avançar.
 tools: Read, Glob, Grep, Bash
 ---
