@@ -69,7 +69,7 @@
   - Agente: **soroban-dev**
   - Pronto: `stellar contract invoke --id selo --source admin --network testnet -- reputation --member $(stellar keys address emissor)` retorna `0`, e um 2º `init` retorna o erro `#1` (AlreadyInitialized)
 
-- [ ] **T08 [PREP] Bindings TypeScript**
+- [x] **T08 [PREP] Bindings TypeScript**
   - Descrição: `stellar contract bindings typescript --contract-id selo --network testnet --output-dir bindings/selo`, depois instalar e buildar o pacote gerado.
   - Arquivos: `bindings/selo/**`
   - Depende de: T07
