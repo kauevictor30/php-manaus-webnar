@@ -94,7 +94,7 @@
   - Agente: **luiz**
   - Pronto: `cd backend && php artisan test --filter=EventApiTest`
 
-- [ ] **T11 [PREP] Indexador `selo:index`**
+- [x] **T11 [PREP] Indexador `selo:index`**
   - Descrição: comando da §3.4 (cursor, `SELO_START_LEDGER`, transação por página, `issued`/`revoked`, idempotência D-07) e agendamento a cada minuto. Testes com a resposta do RPC simulada (`issued`, `revoked`, rodar 2x).
   - Arquivos: `backend/app/Console/Commands/IndexSeloEvents.php`, `routes/console.php`, `tests/Feature/IndexerTest.php`
   - Depende de: T09
