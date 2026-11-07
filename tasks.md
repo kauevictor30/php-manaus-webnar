@@ -126,7 +126,7 @@
   - Agente: **felipe**
   - Pronto: `cd frontend && npm run build`
 
-- [ ] **T15 [PREP] Tela Perfil (`/m/:address`)**
+- [x] **T15 [PREP] Tela Perfil (`/m/:address`)**
   - Descrição: colunas "on-chain" (`reputation` + `badges_of` pelos bindings, sem carteira) e "off-chain" (`GET /api/members/{address}` com revogados), lado a lado, com validação do endereço e estados independentes por coluna.
   - Arquivos: `frontend/src/pages/Perfil.tsx` (+ componentes)
   - Depende de: T13
