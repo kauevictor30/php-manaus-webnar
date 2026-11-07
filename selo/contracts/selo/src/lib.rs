@@ -217,6 +217,75 @@ impl Selo {
         .publish(&env);
         Ok(())
     }
+
+    /// Revoga um badge. Só o admin. A remoção da lista é pelo VALOR (kind, event_id).
+    pub fn revoke(env: Env, member: Address, kind: BadgeKind, event_id: u32) -> Result<(), Error> {
+        let admin = read_admin(&env)?;
+        admin.require_auth();
+
+        let badge_key = DataKey::Badge(member.clone(), kind, event_id);
+        if !env.storage().persistent().has(&badge_key) {
+            return Err(Error::BadgeNotFound);
+        }
+        // remove o badge e a chave de dedup (RN-06: pode ser reemitido)
+        env.storage().persistent().remove(&badge_key);
+
+        let list_key = DataKey::BadgeList(member.clone());
+        let mut list: Vec<(BadgeKind, u32)> = env
+            .storage()
+            .persistent()
+            .get(&list_key)
+            .unwrap_or_else(|| Vec::new(&env));
+        let idx = list
+            .first_index_of((kind, event_id))
+            .expect("badge list invariant");
+        list.remove(idx);
+        env.storage().persistent().set(&list_key, &list);
+        bump_persistent(&env, &list_key);
+
+        let rep_key = DataKey::Reputation(member.clone());
+        let rep: u32 = env.storage().persistent().get(&rep_key).unwrap_or(0);
+        let rep = rep
+            .checked_sub(weight(kind))
+            .expect("reputation invariant");
+        env.storage().persistent().set(&rep_key, &rep);
+        bump_persistent(&env, &rep_key);
+
+        bump_instance(&env);
+
+        RevokedEvent {
+            member,
+            kind,
+            event_id,
+        }
+        .publish(&env);
+        Ok(())
+    }
+
+    /// Reputação on-chain do membro (0 se não tiver badges).
+    pub fn reputation(env: Env, member: Address) -> u32 {
+        env.storage()
+            .persistent()
+            .get(&DataKey::Reputation(member))
+            .unwrap_or(0)
+    }
+
+    /// Badges ativos do membro, na ordem de emissão.
+    pub fn badges_of(env: Env, member: Address) -> Vec<Badge> {
+        let list: Vec<(BadgeKind, u32)> = env
+            .storage()
+            .persistent()
+            .get(&DataKey::BadgeList(member.clone()))
+            .unwrap_or_else(|| Vec::new(&env));
+        let mut out = Vec::new(&env);
+        for (kind, event_id) in list.iter() {
+            let key = DataKey::Badge(member.clone(), kind, event_id);
+            if let Some(badge) = env.storage().persistent().get::<_, Badge>(&key) {
+                out.push_back(badge);
+            }
+        }
+        out
+    }
 }
 
 mod test;

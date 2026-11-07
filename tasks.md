@@ -55,7 +55,7 @@
   - Agente: **soroban-dev**
   - Pronto: `cd selo && cargo test -p selo`
 
-- [ ] **T06 [PREP] `revoke`, `reputation`, `badges_of`**
+- [x] **T06 [PREP] `revoke`, `reputation`, `badges_of`**
   - Descrição: testes primeiro (emitir 3 e revogar o do **meio**, `BadgeNotFound`, sem auth, revogar e reemitir, evento `revoked`, reputação 0 para quem não tem badge), depois a implementação. A remoção é **por valor** (`first_index_of`).
   - Arquivos: `selo/contracts/selo/src/lib.rs`, `src/test.rs`
   - Depende de: T05

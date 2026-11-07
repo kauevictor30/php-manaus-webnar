@@ -448,4 +448,279 @@ fn issue_emissor_desativado_falha_not_issuer_e_badges_antigos_continuam() {
     // RN-07: o badge antigo continua válido
     assert!(badge_gravado(&env, &id, &membro, BadgeKind::Participante, 1).is_some());
     assert_eq!(reputacao_gravada(&env, &id, &membro), Some(1));
+    let badges = client.badges_of(&membro);
+    assert_eq!(badges.len(), 1);
+    assert_eq!(badges.get_unchecked(0).issuer, emissor);
+    assert_eq!(client.reputation(&membro), 1);
+}
+
+// ------------------------------------------------------------ revoke / reputation / badges_of (T06)
+
+fn badge(kind: BadgeKind, event_id: u32, issuer: &Address, issued_at: u64) -> Badge {
+    Badge {
+        kind,
+        event_id,
+        issuer: issuer.clone(),
+        issued_at,
+    }
+}
+
+#[test]
+fn reputation_e_zero_para_quem_nao_tem_badge() {
+    let (env, _id, client) = novo();
+    let ninguem = Address::generate(&env);
+    assert_eq!(client.reputation(&ninguem), 0);
+}
+
+#[test]
+fn badges_of_e_vazio_para_quem_nao_tem_badge() {
+    let (env, _id, client) = novo();
+    let ninguem = Address::generate(&env);
+    assert_eq!(client.badges_of(&ninguem), Vec::<Badge>::new(&env));
+}
+
+#[test]
+fn reputation_e_badges_of_nao_exigem_auth() {
+    let (env, _id, client, _admin, emissor) = com_emissor();
+    let membro = Address::generate(&env);
+    client.issue(&emissor, &membro, &BadgeKind::Mentor, &1);
+    env.set_auths(&[]); // desliga o mock_all_auths
+    assert_eq!(client.try_reputation(&membro), Ok(Ok(3)));
+    assert!(client.try_badges_of(&membro).is_ok());
+    assert!(env.auths().is_empty());
+}
+
+#[test]
+fn badges_of_retorna_na_ordem_de_emissao() {
+    let (env, _id, client, _admin, emissor) = com_emissor();
+    env.ledger().set_timestamp(100);
+    let membro = Address::generate(&env);
+    client.issue(&emissor, &membro, &BadgeKind::Participante, &1);
+    client.issue(&emissor, &membro, &BadgeKind::Palestrante, &2);
+    assert_eq!(
+        client.badges_of(&membro),
+        vec![
+            &env,
+            badge(BadgeKind::Participante, 1, &emissor, 100),
+            badge(BadgeKind::Palestrante, 2, &emissor, 100),
+        ]
+    );
+    assert_eq!(client.reputation(&membro), 6);
+}
+
+#[test]
+fn emitir_3_e_revogar_o_do_meio() {
+    let (env, id, client, _admin, emissor) = com_emissor();
+    env.ledger().set_timestamp(500);
+    let membro = Address::generate(&env);
+    client.issue(&emissor, &membro, &BadgeKind::Participante, &1); // 1
+    client.issue(&emissor, &membro, &BadgeKind::Mentor, &2); // 3
+    client.issue(&emissor, &membro, &BadgeKind::Palestrante, &3); // 5
+    assert_eq!(client.reputation(&membro), 9);
+
+    client.revoke(&membro, &BadgeKind::Mentor, &2);
+
+    assert_eq!(
+        client.badges_of(&membro),
+        vec![
+            &env,
+            badge(BadgeKind::Participante, 1, &emissor, 500),
+            badge(BadgeKind::Palestrante, 3, &emissor, 500),
+        ]
+    );
+    assert_eq!(client.reputation(&membro), 6);
+    assert_eq!(badge_gravado(&env, &id, &membro, BadgeKind::Mentor, 2), None);
+    assert_eq!(
+        lista_gravada(&env, &id, &membro),
+        Some(vec![
+            &env,
+            (BadgeKind::Participante, 1u32),
+            (BadgeKind::Palestrante, 3u32)
+        ])
+    );
+}
+
+#[test]
+fn revogar_o_primeiro_e_depois_o_ultimo_remove_pelos_valores() {
+    let (env, _id, client, _admin, emissor) = com_emissor();
+    let membro = Address::generate(&env);
+    client.issue(&emissor, &membro, &BadgeKind::Participante, &1);
+    client.issue(&emissor, &membro, &BadgeKind::Mentor, &2);
+    client.issue(&emissor, &membro, &BadgeKind::Organizador, &3);
+    client.issue(&emissor, &membro, &BadgeKind::Palestrante, &4);
+
+    client.revoke(&membro, &BadgeKind::Participante, &1);
+    client.revoke(&membro, &BadgeKind::Palestrante, &4);
+
+    let restantes: std::vec::Vec<(BadgeKind, u32)> = client
+        .badges_of(&membro)
+        .iter()
+        .map(|b| (b.kind, b.event_id))
+        .collect();
+    assert_eq!(
+        restantes,
+        std::vec![(BadgeKind::Mentor, 2), (BadgeKind::Organizador, 3)]
+    );
+    assert_eq!(client.reputation(&membro), 6);
+}
+
+#[test]
+fn revoke_exige_auth_do_admin() {
+    let (env, id, client, admin, emissor) = com_emissor();
+    let membro = Address::generate(&env);
+    client.issue(&emissor, &membro, &BadgeKind::Mentor, &2);
+    client.revoke(&membro, &BadgeKind::Mentor, &2);
+    assert_eq!(
+        env.auths(),
+        std::vec![(
+            admin.clone(),
+            AuthorizedInvocation {
+                function: AuthorizedFunction::Contract((
+                    id.clone(),
+                    Symbol::new(&env, "revoke"),
+                    (membro.clone(), BadgeKind::Mentor, 2u32).into_val(&env),
+                )),
+                sub_invocations: std::vec![],
+            }
+        )]
+    );
+}
+
+#[test]
+fn revoke_emite_evento_revoked() {
+    let (env, id, client, _admin, emissor) = com_emissor();
+    let membro = Address::generate(&env);
+    client.issue(&emissor, &membro, &BadgeKind::Organizador, &8);
+    client.revoke(&membro, &BadgeKind::Organizador, &8);
+    assert_eq!(
+        env.events().all(),
+        [RevokedEvent {
+            member: membro.clone(),
+            kind: BadgeKind::Organizador,
+            event_id: 8,
+        }
+        .to_xdr(&env, &id)]
+    );
+}
+
+#[test]
+fn revoke_estende_ttl_da_lista_e_da_reputacao() {
+    let (env, id, client, _admin, emissor) = com_emissor();
+    let membro = Address::generate(&env);
+    client.issue(&emissor, &membro, &BadgeKind::Participante, &1);
+    client.issue(&emissor, &membro, &BadgeKind::Mentor, &2);
+    // avança o ledger até o TTL ficar abaixo do TTL_THRESHOLD (extend_ttl só age aí)
+    env.ledger()
+        .with_mut(|l| l.sequence_number += TTL_EXTEND_TO - TTL_THRESHOLD + 1);
+    let lista = DataKey::BadgeList(membro.clone());
+    let rep = DataKey::Reputation(membro.clone());
+    assert_eq!(ttl_persistent(&env, &id, &lista), TTL_THRESHOLD - 1);
+    assert_eq!(ttl_persistent(&env, &id, &rep), TTL_THRESHOLD - 1);
+
+    client.revoke(&membro, &BadgeKind::Participante, &1);
+
+    assert_eq!(ttl_persistent(&env, &id, &lista), TTL_EXTEND_TO);
+    assert_eq!(ttl_persistent(&env, &id, &rep), TTL_EXTEND_TO);
+}
+
+#[test]
+fn revoke_sem_auth_falha() {
+    let (env, id, client, _admin, emissor) = com_emissor();
+    let membro = Address::generate(&env);
+    client.issue(&emissor, &membro, &BadgeKind::Mentor, &2);
+    env.set_auths(&[]); // desliga o mock_all_auths
+    assert!(matches!(
+        client.try_revoke(&membro, &BadgeKind::Mentor, &2),
+        Err(Err(_))
+    ));
+    assert!(badge_gravado(&env, &id, &membro, BadgeKind::Mentor, 2).is_some());
+    assert_eq!(client.reputation(&membro), 3);
+}
+
+#[test]
+fn revoke_assinado_pelo_emissor_falha() {
+    let (env, id, client, _admin, emissor) = com_emissor();
+    let membro = Address::generate(&env);
+    client.issue(&emissor, &membro, &BadgeKind::Mentor, &2);
+    env.mock_auths(&[MockAuth {
+        address: &emissor,
+        invoke: &MockAuthInvoke {
+            contract: &id,
+            fn_name: "revoke",
+            args: (membro.clone(), BadgeKind::Mentor, 2u32).into_val(&env),
+            sub_invokes: &[],
+        },
+    }]);
+    assert!(matches!(
+        client.try_revoke(&membro, &BadgeKind::Mentor, &2),
+        Err(Err(_))
+    ));
+    assert_eq!(client.reputation(&membro), 3);
+}
+
+#[test]
+fn revoke_inexistente_falha_badge_not_found() {
+    let (env, _id, client, _admin, emissor) = com_emissor();
+    let membro = Address::generate(&env);
+    assert_eq!(
+        client.try_revoke(&membro, &BadgeKind::Mentor, &2),
+        Err(Ok(Error::BadgeNotFound))
+    );
+    // membro com outros badges, mas não esse
+    client.issue(&emissor, &membro, &BadgeKind::Mentor, &3);
+    client.issue(&emissor, &membro, &BadgeKind::Participante, &2);
+    assert_eq!(
+        client.try_revoke(&membro, &BadgeKind::Mentor, &2),
+        Err(Ok(Error::BadgeNotFound))
+    );
+    assert_eq!(client.reputation(&membro), 4);
+}
+
+#[test]
+fn revoke_duas_vezes_falha_badge_not_found() {
+    let (env, _id, client, _admin, emissor) = com_emissor();
+    let membro = Address::generate(&env);
+    client.issue(&emissor, &membro, &BadgeKind::Mentor, &2);
+    client.revoke(&membro, &BadgeKind::Mentor, &2);
+    assert_eq!(
+        client.try_revoke(&membro, &BadgeKind::Mentor, &2),
+        Err(Ok(Error::BadgeNotFound))
+    );
+    assert_eq!(client.reputation(&membro), 0);
+}
+
+#[test]
+fn revoke_antes_do_init_falha_not_initialized() {
+    let (env, _id, client) = novo();
+    env.mock_all_auths();
+    let membro = Address::generate(&env);
+    assert_eq!(
+        client.try_revoke(&membro, &BadgeKind::Mentor, &2),
+        Err(Ok(Error::NotInitialized))
+    );
+}
+
+#[test]
+fn revogar_e_reemitir_funciona() {
+    let (env, _id, client, _admin, emissor) = com_emissor();
+    let membro = Address::generate(&env);
+    client.issue(&emissor, &membro, &BadgeKind::Palestrante, &4);
+    client.issue(&emissor, &membro, &BadgeKind::Participante, &4);
+    client.revoke(&membro, &BadgeKind::Palestrante, &4);
+    assert_eq!(client.reputation(&membro), 1);
+
+    assert_eq!(
+        client.try_issue(&emissor, &membro, &BadgeKind::Palestrante, &4),
+        Ok(Ok(()))
+    );
+    assert_eq!(client.reputation(&membro), 6);
+    let ordem: std::vec::Vec<(BadgeKind, u32)> = client
+        .badges_of(&membro)
+        .iter()
+        .map(|b| (b.kind, b.event_id))
+        .collect();
+    assert_eq!(
+        ordem,
+        std::vec![(BadgeKind::Participante, 4), (BadgeKind::Palestrante, 4)]
+    );
 }
