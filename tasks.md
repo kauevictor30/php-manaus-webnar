@@ -10,11 +10,11 @@
 |---|---|
 | Workspace do contrato | `selo/` (`selo/Cargo.toml`, `selo/Cargo.lock`) |
 | Crate do contrato | `selo/contracts/selo/` (`src/lib.rs`, `src/test.rs`, `Makefile`) |
-| WASM gerado | _(preencher depois da T07)_ |
+| WASM gerado | `selo/target/wasm32v1-none/release/selo.wasm` (hash `5591b6990a8477cf02a29fce82f3b3c72843e7a9d664c7f38978943386593083`) |
 | Bindings TS | `bindings/selo/` |
 | Laravel | `backend/` |
 | React | `frontend/` |
-| Contract ID / ledger do deploy | _(preencher depois da T07)_ |
+| Contract ID / ledger do deploy | `CDOLW5XCTGHWGZWIDSBXGIUGSDKQOWILSCU7D6FNHV4NH2IGD73W5B3Q` (alias `selo`) · deploy no ledger `5611391` · **`SELO_START_LEDGER=5611351`** (`stellar ledger latest` antes do deploy) |
 
 ---
 
@@ -62,7 +62,7 @@
   - Agente: **soroban-dev**
   - Pronto: `cd selo && cargo test -p selo` com todos os testes da §2.6 verdes
 
-- [ ] **T07 [PREP] Build, deploy e inicialização na testnet**
+- [x] **T07 [PREP] Build, deploy e inicialização na testnet**
   - Descrição: `stellar ledger latest --network testnet` (anotar como `SELO_START_LEDGER`) → `stellar contract build` → `stellar contract deploy --wasm <wasm> --source admin --network testnet --alias selo` → `init` com o admin → `set_issuer` com o emissor e `true`. Registrar o contract ID, o ledger e o caminho do WASM em "Caminhos reais". Conferir a sintaxe dos argumentos com `stellar contract invoke --id selo --network testnet -- <função> --help`.
   - Arquivos: `tasks.md`
   - Depende de: T06
